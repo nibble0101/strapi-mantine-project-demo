@@ -10,6 +10,7 @@ import {
   LightTheme,
   ReadyPage,
   ErrorComponent,
+  AuthPage,
 } from "@pankod/refine-mantine";
 
 import { DataProvider } from "@pankod/refine-strapi-v4";
@@ -17,6 +18,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 
 import { authProvider, axiosInstance } from "./authProvider";
 import { API_URL } from "./constants";
+
+import { PostList, PostCreate, PostEdit   } from "./pages/posts";
 
 function App() {
   return (
@@ -30,7 +33,28 @@ function App() {
           Layout={Layout}
           ReadyPage={ReadyPage}
           catchAll={<ErrorComponent />}
-          routerProvider={routerProvider}
+          LoginPage={AuthPage}
+          routerProvider={{
+            ...routerProvider,
+            routes: [
+              { path: "/login", element: <AuthPage type="login" /> },
+              { path: "/register", element: <AuthPage type="register" /> },
+              {
+                path: "/forgot-password",
+                element: <AuthPage type="forgotPassword" />,
+              },
+            ],
+          }}
+          resources={[
+            {
+              name: "posts",
+              list: PostList,
+              create: PostCreate,
+              edit: PostEdit,
+              canDelete: true,
+            },
+          ]}
+          options = {{ mutationMode: "optimistic", syncWithLocation: true}}
         />
       </NotificationsProvider>
     </MantineProvider>
